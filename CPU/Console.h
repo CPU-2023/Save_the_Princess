@@ -1,16 +1,11 @@
+#include <stdio.h>
 #include <windows.h>
+#include <stralign.h>
+#include <stdlib.h>
 
-void Clear(void);
-//화면을 지우고 커서 위치 0,0 이동시키는 함수
+#define pause system("pause > nul")    //그냥 내가 많이 쓰는 커맨드를 줄여준 것이다.
+#define cls system("cls")    //이것 또한
 
-void gotoxy(int _x, int _y);
-//커서 위치 변경
-
-void SetTitle(char* _szConsoleName);
-//console창 제목 바꾸기
-
-void SetColor(unsigned char _BgColor, unsigned char _TextColor);
-//배경, 글자색 변경
-
-void SetConsoleSize(int _col, int _lines);
-//콘솔 사이즈 
+void SetColor(int color);
+void CursorView(char show);
+void gotoxy(int x, int y);
