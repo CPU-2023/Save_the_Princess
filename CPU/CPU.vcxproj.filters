@@ -15,10 +15,19 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.c">
+    <ClCompile Include="Function.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Console.h">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="FirstScreen.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="OverScreen.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Success.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

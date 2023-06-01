@@ -1,11 +1,43 @@
-#include <stdio.h>
 #include <windows.h>
-#include <stralign.h>
-#include <stdlib.h>
 
-#define pause system("pause > nul")    //그냥 내가 많이 쓰는 커맨드를 줄여준 것이다.
-#define cls system("cls")    //이것 또한
+void SetColor(unsigned char _BgColor, unsigned char _TextColor)
+{
+    if (_BgColor > 15 || _TextColor > 15)
+        return;
 
-void SetColor(int color);
-void CursorView(char show);
-void gotoxy(int x, int y);
+    unsigned short ColorNum = (_BgColor << 4) | _TextColor;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), ColorNum);
+}
+void Clearscreen(void)
+{
+    system("cls");
+}
+
+
+
+void CursorView(char show)
+{
+    HANDLE hConsole;
+    CONSOLE_CURSOR_INFO ConsoleCursor;
+
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    ConsoleCursor.bVisible = show;
+    ConsoleCursor.dwSize = 1;
+
+    SetConsoleCursorInfo(hConsole, &ConsoleCursor);
+}
+BOOL IsKeyDown(int Key)
+{
+    return ((GetAsyncKeyState(Key) & 0x8000) != 0);
+}
+
+void gotoxy(int x, int y)
+{
+    COORD Pos = { x - 1, y - 1 };
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Pos);
+}
+
+/*void textcolor(int colorNum) {
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), colorNum);
+}*/
