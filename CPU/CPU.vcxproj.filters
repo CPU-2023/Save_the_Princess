@@ -27,7 +27,7 @@
     <ClCompile Include="OverScreen.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Success.c">
+    <ClCompile Include="GameRule.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

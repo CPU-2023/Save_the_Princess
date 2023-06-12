@@ -132,7 +132,7 @@
     <ClCompile Include="FirstScreen.c" />
     <ClCompile Include="Function.c" />
     <ClCompile Include="OverScreen.c" />
-    <ClCompile Include="Success.c" />
+    <ClCompile Include="GameRule.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

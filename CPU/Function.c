@@ -1,5 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
+ï»¿#include <stdio.h>
 #include <time.h>
 #include <conio.h>
 #include <Windows.h>
@@ -7,32 +6,43 @@
 
 #pragma warning (disable : 4996)
 
-//esc ¾Æ½ºÅ° ÄÚµå
+#define UP 0
+#define DOWN 1
+#define LEFT 2
+#define RIGHT 3
+#define SUBMIT 4
+
+//esc ì•„ìŠ¤í‚¤ ì½”ë“œ
 #define ESC 27
-//ÃÖ´ë Àû ¼ö
-#define MAXENEMY 30
-//ÃÖ´ë ÃÑ¾Ë ¼ö
+//ìµœëŒ€ ì  ìˆ˜
+#define MAXENEMY 4
+//ìµœëŒ€ ì´ì•Œ ìˆ˜
 #define MAXBALL 10
 
-//Á¡¼ö
+void SuccessDraw();   //ì œëª© ì¶œë ¥
+void init2();        //ì½˜ì†”ì°½ í¬ê¸°í•¨ìˆ˜ 
+int Successmenu();     //ë©”ë‰´ ì¶œë ¥&ì„ íƒ í•¨ìˆ˜ 
+int S_keyControl();   //í™”ì‚´í‘œ ì„ íƒí•˜ëŠ” ê±°
+
+//ì ìˆ˜
 int Score;
 struct Player {
     int x, y;
 };
 
-//Àû ±¸Á¶Ã¼
+//ì  êµ¬ì¡°ì²´
 struct Enemy
 {
     BOOL exist;
-    //ÀûÀÇ Á¾·ù
+    //ì ì˜ ì¢…ë¥˜
     int Type;
     int x, y;
-    //ÀûÀÌ ÁÂ¿ì·Î ¿òÁ÷ÀÏ ¶§ »ç¿ëÇÏ´Â º¯¼ö
+    //ì ì´ ì¢Œìš°ë¡œ ì›€ì§ì¼ ë•Œ ì‚¬ìš©í•˜ëŠ” ë³€ìˆ˜
     int movementcal;
 
-    //ÀûÀÇ ¿òÁ÷ÀÓ ¾Ö´Ï¸ŞÀÌ¼ÇÀ» Ç¥ÇöÇÏ±â À§ÇÑ º¯¼ö
-    int nFrame;
-    int nStay;
+    //ì ì˜ ì›€ì§ì„ ì• ë‹ˆë©”ì´ì…˜ì„ í‘œí˜„í•˜ê¸° ìœ„í•œ ë³€ìˆ˜
+    int Frame;
+    int Stay;
 }
 Enemy[MAXENEMY];
 
@@ -41,12 +51,12 @@ struct Bullet
 {
     BOOL exist;
     int x, y;
-    int nFrame;
-    int nStay;
+    int Frame;
+    int Stay;
 }
 Bullet[MAXBALL];
 
-const char* Type_Enemy[] = { " ^_^ ", " >_< ", " *_* ", " x_x " };
+const char* Type_Enemy[] = { " â—ˆâ—ˆâ—ˆ ", " â—__â— ", " âŠ™oâŠ™ ", " ï¼ ï¼ ï¼  " };
 
 void textcolor(int colorNum) {
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), colorNum);
@@ -54,31 +64,47 @@ void textcolor(int colorNum) {
 
 void drawscreen() {
     textcolor(14);
-    printf("¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á\n");
-    printf("¡á                                                                        ¡á\n");
-    printf("¡á                                                                        ¡á\n");
-    printf("¡á                                                                        ¡á\n");
-    printf("¡á                                                                        ¡á\n");
-    printf("¡á                                                                        ¡á\n");
-    printf("¡á                                                                        ¡á\n");
-    printf("¡á                                                                        ¡á\n");
-    printf("¡á                                                                        ¡á\n");
-    printf("¡á                                                                        ¡á\n");
-    printf("¡á                                                                        ¡á\n");
-    printf("¡á                                                                        ¡á\n");
-    printf("¡á                                                                        ¡á\n");
-    printf("¡á                                                                        ¡á\n");
-    printf("¡á                                                                        ¡á\n");
-    printf("¡á                                                                        ¡á\n");
-    printf("¡á                                                                        ¡á\n");
-    printf("¡á                                                                        ¡á\n");
-    printf("¡á                                                                        ¡á\n");
-    printf("¡á                                                                        ¡á\n");
-    printf("¡á                                                                        ¡á\n");
-    printf("¡á                                                                        ¡á\n");
-    printf("¡á                                                                        ¡á\n");
-    printf("¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á¡á\n");
+    printf("â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â–  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”\n");
+    printf("â–                                                                         â–  â”‚                                  â”‚\n");
+    printf("â–                                                                         â–  â”‚                                  â”‚\n");
+    printf("â–                                                                         â–  â”‚                                  â”‚\n");
+    printf("â–                                                                         â–  â”‚                                  â”‚\n");
+    printf("â–                                                                         â–  â”‚                                  â”‚\n");
+    printf("â–                                                                         â–  â”‚                                  â”‚\n");
+    printf("â–                                                                         â–  â”‚                                  â”‚\n");
+    printf("â–                                                                         â–  â”‚                                  â”‚\n");
+    printf("â–                                                                         â–  â”‚                                  â”‚\n");
+    printf("â–                                                                         â–  â”‚                                  â”‚\n");
+    printf("â–                                                                         â–  â”‚                                  â”‚\n");
+    printf("â–                                                                         â–  â”‚                                  â”‚\n");
+    printf("â–                                                                         â–  â”‚                                  â”‚\n");
+    printf("â–                                                                         â–  â”‚                                  â”‚\n");
+    printf("â–                                                                         â–  â”‚                                  â”‚\n");
+    printf("â–                                                                         â–  â”‚                                  â”‚\n");
+    printf("â–                                                                         â–  â”‚                                  â”‚\n");
+    printf("â–                                                                         â–  â”‚                                  â”‚\n");
+    printf("â–                                                                         â–  â”‚                                  â”‚\n");
+    printf("â–                                                                         â–  â”‚                                  â”‚\n");
+    printf("â–                                                                         â–  â”‚                                  â”‚\n");
+    printf("â–                                                                         â–  â”‚                                  â”‚\n");
+    printf("â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â–  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜\n");
 }
+
+void escreen()
+{
+    srand((unsigned int)time(NULL)); // ë‚œìˆ˜ ì´ˆê¸°í™”
+
+    // ì  ì´ˆê¸°í™”
+    for (int i = 0; i < MAXENEMY; i++)
+    {
+        Enemy[i].exist = FALSE;
+        Enemy[i].Frame = 0;
+        Enemy[i].Stay = 0;
+        Enemy[i].x = rand() % 80 + 10; // 10ë¶€í„° 89ê¹Œì§€ì˜ ëœë¤í•œ x ì¢Œí‘œ
+        Enemy[i].y = rand() % 20 + 1;  // 1ë¶€í„° 20ê¹Œì§€ì˜ ëœë¤í•œ y ì¢Œí‘œ
+    }
+}
+
 void Function()
 {
 
@@ -89,7 +115,7 @@ void Function()
 
     srand((unsigned)time(NULL));
     system("cls");
-    //CursorView(0);//Ä¿¼­ ¼û±â±â
+    //CursorView(0);//ì»¤ì„œ ìˆ¨ê¸°ê¸°
 
     struct Player player;
     player.x = 60;
@@ -103,7 +129,7 @@ void Function()
 
     while (1) {
 
-        // ÁÂ¿ì ÀÌµ¿ Ã³¸®
+        // ì¢Œìš° ì´ë™ ì²˜ë¦¬
         if (GetAsyncKeyState(VK_LEFT))
         {
             if (player.x > 6)
@@ -114,18 +140,8 @@ void Function()
             if (player.x < 72)
                 player.x++;
         }
-        if (GetAsyncKeyState(VK_UP))
-        {
-            if (player.y > 6)
-                player.y--;
-        }
-        if (GetAsyncKeyState(VK_DOWN))
-        {
-            if (player.y < 72)
-                player.y++;
-        }
 
-        // Å° ÀÔ·Â Ã³¸®-- ÃÑ¾Ë¹ß»ç¶û Á¾·á(Á¶±İ´õ ÄÚµå ºĞ¼®ÇÏÀÚ)
+        // í‚¤ ì…ë ¥ ì²˜ë¦¬-- ì´ì•Œë°œì‚¬ë‘ ì¢…ë£Œ(ì¡°ê¸ˆë” ì½”ë“œ ë¶„ì„í•˜ì)
         if (kbhit())
         {
             ch = getch();
@@ -150,13 +166,13 @@ void Function()
             }
         }
 
-        // ¾Æ±º ÃÑ¾Ë ÀÌµ¿ ¹× Ãâ·Â
+        // ì•„êµ° ì´ì•Œ ì´ë™ ë° ì¶œë ¥
         if (bullet.x != -1)
         {
             gotoxy(bullet.x, bullet.y);
             putch('  ');
             bullet.y--;
-            if (bullet.y <= 2) { // y ÁÂÇ¥°¡ 0 ÀÌÇÏÀÏ ¶§ ÃÑ¾Ë »èÁ¦
+            if (bullet.y <= 2) { // y ì¢Œí‘œê°€ 0 ì´í•˜ì¼ ë•Œ ì´ì•Œ ì‚­ì œ
                 gotoxy(bullet.x, bullet.y);
                 putch(' ');
                 bullet.x = -1;
@@ -168,51 +184,51 @@ void Function()
             }
         }
 
-        // Àû±º »ı¼º
-        if (rand() % 50 == 0)
-        {
-            for (i = 0; i < MAXENEMY && Enemy[i].exist == TRUE; i++) { ; }
-            if (i != MAXENEMY)
-            {
-                if ((rand() % 2) + 1 == 1)
-                {
-                    Enemy[i].x = 7;
-                    Enemy[i].movementcal = 1;
-                }
-
-                else
-                {
-                    Enemy[i].x = 70;
-                    Enemy[i].movementcal = -1;
-                }
-
-                //while·Î ¹Ù²ÙÀå!
-                for (;;) {
-                    Enemy[i].y = rand() % 10 + 2;
-                    for (BulletFound = FALSE, j = 0; j < MAXENEMY; j++)
-                    {
-                        if (Enemy[j].exist == TRUE && Enemy[j].y == Enemy[i].y)
-                        {
-                            BulletFound = TRUE;
-                            break;
-                        }
-                    }
-                    if (BulletFound == FALSE)
-                    {
-                        break;
-                    }
-                }
-                Enemy[i].nFrame = Enemy[i].nStay = rand() % 6 + 1;
-                Enemy[i].Type = rand() % (sizeof(Type_Enemy) / sizeof(Type_Enemy[0])); //random(sizeof(Type_Enemy) / sizeof(Type_Enemy[0]));
-                Enemy[i].exist = TRUE;
+        // ì êµ° ìƒì„±
+        int available = -1;
+        for (int i = 0; i < MAXENEMY; i++) {
+            if (Enemy[i].exist == FALSE) {
+                available = i;
+                break;
             }
         }
 
+        if (available != -1) {
+            int position = 0;
+            int newX, newY;
 
-        // Àû±º°ú ¾Æ±º ÃÑ¾ËÀÇ Ãæµ¹ ÆÇÁ¤
+            do {
+                position = 0;
+                if ((rand() % 2) + 1 == 1) {
+                    newX = 7;
+                    Enemy[available].movementcal = 1;
+                }
+                else {
+                    newX = 70;
+                    Enemy[available].movementcal = -1;
+                }
+                newY = rand() % 10 + 2;
+
+                for (int j = 0; j < MAXENEMY; j++) {
+                    if (Enemy[j].exist && (Enemy[j].x == newX && Enemy[j].y == newY)) {
+                        position = 1;
+                        break;
+                    }
+                }
+            } while (position);
+
+            Enemy[available].x = newX;
+            Enemy[available].y = newY;
+            Enemy[available].Frame = Enemy[available].Stay = rand() % 6 + 1;
+            Enemy[available].Type = rand() % (sizeof(Type_Enemy) / sizeof(Type_Enemy[0]));
+            Enemy[available].exist = TRUE;
+        }
+
+
+        // ì êµ°ê³¼ ì•„êµ° ì´ì•Œì˜ ì¶©ëŒ íŒì •
         for (i = 0; i < MAXENEMY; i++)
         {
-            if (Enemy[i].x == 120) Enemy[i].exist = FALSE;
+            if (Enemy[i].x > 120 || Enemy[i].y <= 2) Enemy[i].exist = FALSE;
 
             if (Enemy[i].exist == FALSE)
                 continue;
@@ -225,22 +241,22 @@ void Function()
                 gotoxy(Enemy[i].x - 3, Enemy[i].y);
                 puts("       ");
                 Score += 5;
-                if (Score == 20) Success();
+                if (Score == 50) Success();
                 break;
 
             }
 
         }
 
-        // Àû±º ÃÑ¾Ë ÀÌµ¿
+        // ì êµ° ì´ì•Œ ì´ë™
         for (i = 0; i < MAXBALL; i++)
         {
             if (Bullet[i].exist == FALSE)
                 continue;
 
-            if (--Bullet[i].nStay == 0)
+            if (--Bullet[i].Stay == 0)
             {
-                Bullet[i].nStay = Bullet[i].nFrame;
+                Bullet[i].Stay = Bullet[i].Frame;
                 gotoxy(Bullet[i].x, Bullet[i].y); putch(' ');
 
                 if (Bullet[i].y >= 23)
@@ -250,13 +266,13 @@ void Function()
                 else
                 {
                     Bullet[i].y++;
-                    gotoxy(Bullet[i].x, Bullet[i].y); putch('¡Ü');
+                    gotoxy(Bullet[i].x, Bullet[i].y); putch('â—');
                 }
             }
 
         }
 
-        // Àû±º ÃÑ¾Ë°ú ¾Æ±ºÀÇ Ãæµ¹ ÆÇÁ¤
+        // ì êµ° ì´ì•Œê³¼ ì•„êµ°ì˜ ì¶©ëŒ íŒì •
         for (i = 0; i < MAXBALL; i++) {
             if (Bullet[i].exist == FALSE) continue;
             if (Bullet[i].y == 23 && abs(Bullet[i].x - player.x) <= 2) {
@@ -269,11 +285,11 @@ void Function()
             }
         }
 
-        // Àû±º ÀÌµ¿ ¹× Ãâ·Â
+        // ì êµ° ì´ë™ ë° ì¶œë ¥
         for (i = 0; i < MAXENEMY; i++) {
             if (Enemy[i].exist == FALSE) continue;
-            if (--Enemy[i].nStay == 0) {
-                Enemy[i].nStay = Enemy[i].nFrame;
+            if (--Enemy[i].Stay == 0) {
+                Enemy[i].Stay = Enemy[i].Frame;
                 if (Enemy[i].x >= 69 || Enemy[i].x <= 6) {
                     Enemy[i].exist = FALSE;
                     gotoxy(Enemy[i].x - 3, Enemy[i].y);
@@ -284,13 +300,13 @@ void Function()
                     Enemy[i].x += Enemy[i].movementcal;
                     gotoxy(Enemy[i].x - 3, Enemy[i].y);
                     puts(Type_Enemy[Enemy[i].Type]);
-                    // ÃÑ¾Ë ¹ß»ç
+                    // ì´ì•Œ ë°œì‚¬
                     if (rand() % 20 == 0) {
                         for (j = 0; j < MAXBALL && Bullet[j].exist == TRUE; j++) { ; }
                         if (j != MAXBALL) {
                             Bullet[j].x = Enemy[i].x + 2;
                             Bullet[j].y = Enemy[i].y + 1;
-                            Bullet[j].nFrame = Bullet[j].nStay = Enemy[i].nFrame * 6;
+                            Bullet[j].Frame = Bullet[j].Stay = Enemy[i].Frame * 6;
                             Bullet[j].exist = TRUE;
                         }
                     }
@@ -300,43 +316,151 @@ void Function()
 
 
 
-        // ÆÄÀÌÅÍ ¹× Á¡¼ö Ãâ·Â
+        // íŒŒì´í„° ë° ì ìˆ˜ ì¶œë ¥
         CursorView(0);
         gotoxy(player.x - 3, 23);
-        puts(" ¡Ù ");
+        puts(" â˜… ");
         gotoxy(67, 2);
-        printf("Á¡¼ö: %d", Score);
+        printf("ì ìˆ˜: %d", Score);
 
-        gotoxy(80, 10);
-        printf("¢ÀÀÛÀü¸í °øÁÖ¸¦ ±¸ÇÏ¿©¶ó!¢À");
+        gotoxy(82, 4);
+        printf("â™£ì‘ì „ëª…! ê³µì£¼ë¥¼ êµ¬í•˜ì—¬ë¼~â™£");
 
-        gotoxy(80, 12);
-        printf("À§ : ¡è");
+        gotoxy(80, 7);
+        printf("=============ë¯¸ì…˜!===============\n\n");
+        printf("\t\t\t\t\t\t\t\t\t\tì ì„ ê³µê²©í•˜ì—¬ ê³µì£¼ë¥¼ ì§€ì¼œë‚´ë¼!");
 
-        gotoxy(80, 14);
-        printf("¾Æ·¡ : ¡é");
+        gotoxy(80, 11);
+        printf("í•´ë‹¹í‚¤ë¥¼ ì‚¬ìš©í•˜ì—¬ ì ì„ ê³µê²©í•˜ë¼!");
 
-        gotoxy(80, 16);
-        printf("¿ŞÂÊ : ¡ç");
+        printf("\n");
 
-        gotoxy(80, 18);
-        printf("¿À¸¥ÂÊ : ¡æ");
+        gotoxy(80, 13);
+        printf("\t\tì˜¤ë¥¸ìª½ : â†’");
 
-        gotoxy(80, 20);
-        printf("°ø°İ : SPACE");
+        gotoxy(80, 15);
+        printf("\t\tì™¼ìª½   : â† \n");
 
-        // ÃÊ´ç 10 ÇÁ·¹ÀÓ
+        gotoxy(80, 17);
+        printf("\t\tê³µê²©   : SPACE\n\n");
+
+        //gotoxy(80, 19);
+        //printf("\t\tí”Œë ˆì´ì–´ : â˜…\n\n");
+        //printf("\t\t\t\t\t\t\t\t\t\t ì  : â—ˆ , â—__â— ,  âŠ™oâŠ™,  â–£ ");
+
+
+        // ì´ˆë‹¹ 10 í”„ë ˆì„
         Sleep(40);
     }
 end:
-    /*system("cls");
-    gotoxy(30, 10);
-    printf("==========================GAMEOVER==========================\n\n");
-    gotoxy(58, 15);
-    printf("Á¡¼ö=%d\n\n\n\n\n\n\n\n\n\n\n\n", Score);
-    CursorView(0);
-    getchar();*/
     textcolor(15);
     Over();
 
+}
+//mainí•¨ìˆ˜ 
+int Success()
+{
+    init2();
+    SuccessDraw();
+    Successmenu();
+    return 0;
+}
+//ì½˜ì†” í™”ë©´ ì§€ì • í•¨ìˆ˜ 
+void init2() {
+    system("mode con:cols=120 lines=30 | title Save the Princess");
+}
+
+//ì œëª© ì¶œë ¥ í•¨ìˆ˜  \n");
+void SuccessDraw()
+{
+    int x = 5, y = 1;
+    textcolor(14);
+    gotoxy(x, y++); printf("\t\t\t\t  __   __  ___   _______  _______  ___   _______  __    _");
+    gotoxy(x, y++); printf("\t\t\t\t |  |_|  ||   | |       ||       ||   | |       ||  |  | |");
+    gotoxy(x, y++); printf("\t\t\t\t |       ||   | |  _____ || _____||   | |   _   ||   |_| |");
+    gotoxy(x, y++); printf("\t\t\t\t |       ||   | | |_____ | |_____ |   | |  | |  ||       |");
+    gotoxy(x, y++); printf("\t\t\t\t |       ||   | |_____ || _____  ||   | |  |_|  ||  _    |");
+    gotoxy(x, y++); printf("\t\t\t\t | ||_|| ||   |  _____| | _____| ||   | |       || | |   |");
+    gotoxy(x, y++); printf("\t\t\t\t |_|   |_||___| |_______||_______||___| |_______||_|  |__|");
+    gotoxy(x, y++); printf("\t\t\t\t _______  __   __  _______  _______  _______  _______  _______");
+    gotoxy(x, y++); printf("\t\t\t\t|       ||  | |  ||       ||       ||       ||       ||       |");
+    gotoxy(x, y++); printf("\t\t\t\t|  _____||  | |  ||       ||       ||    ___||  _____||  _____|");
+    gotoxy(x, y++); printf("\t\t\t\t| |_____ |  |_|  ||       ||       ||   |___ | |_____ | |_____ ");
+    gotoxy(x, y++); printf("\t\t\t\t| _____ ||       ||      _||      _||   _____|| _____|| ____  |");
+    gotoxy(x, y++); printf("\t\t\t\t  _____|||       ||     |_ |     |_ |   |___  _____| | _____| |");
+    gotoxy(x, y++); printf("\t\t\t\t|_______||_______||_______||_______||_______||_______||_______|");
+    gotoxy(x, y++);
+    gotoxy(x, y++); printf("                                          \t\t\t|â–¶ ");
+    gotoxy(x, y++); printf("                                          \t\t\t| ");
+    gotoxy(x, y++); printf("\t   $$$    $$$     \t\t      â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â–                 ");
+    gotoxy(x, y++); printf("\t  $$$$$  $$$$$    \t\t      â–                               â–                 ");
+    gotoxy(x, y++); printf("\t $$$$$$$$$$$$$$$  \t\t      â–        ì    ìˆ˜ : %d           â–                ", Score);
+    gotoxy(x, y++); printf("\t$$$$$$$$$$$$$$$$$ \t\t      â–                               â–                 ");
+    gotoxy(x, y++); printf("\t $$$$$$$$$$$$$$   \t\t      â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â– â–                 ");
+    gotoxy(x, y++); printf("\t  $$$$$$$$$$$     \t  |-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-| ");
+    gotoxy(x, y++); printf("\t    $$$$$$$       \t  |     ____       ____       ____     ____       ____      | ");
+    gotoxy(x, y++); printf("\t      $$$$        \t  |    |    |     |    |     |    |   |    |     |    |     | ");
+    gotoxy(x, y++); printf("\t       $$         \t  |    |    |     |    |     |    |   |    |     |    |     | ");
+    gotoxy(x, y++); printf("\t                \t    ----------------------------------------------------------- ");
+}//ë©”ë‰´ ì¶œë ¥ í•¨ìˆ˜ & ë©”ë‰´ ì„ íƒê¸°ëŠ¥ í•¨ìˆ˜
+int Successmenu() {
+    int x = 55;
+    int y = 28;
+    int menuIndex = 0;
+    char menuItems[2][20] = { "ëŒì•„ê°€ê¸°","ì¢…   ë£Œ" };
+
+    while (1) {
+        // ë©”ë‰´ ì•„ì´í…œ ì¶œë ¥
+        for (int i = 0; i < 2; i++) {
+            gotoxy(x, y + i);
+            if (i == menuIndex) printf("> %s", menuItems[i]);
+            else printf("  %s", menuItems[i]);
+        }
+
+        // ì…ë ¥ ì²˜ë¦¬
+        int n = S_keyControl();
+        switch (n) {
+        case UP: {
+            if (menuIndex > 0) menuIndex--;
+            break;
+        }
+        case DOWN: {
+            if (menuIndex < 2) menuIndex++;
+            break;
+        }
+        case SUBMIT: {
+            if (menuIndex == 0) {
+                main(); // ëŒì•„ê°€ê¸°ë¥¼ ì„ íƒí•˜ë©´ FirstScreen() í•¨ìˆ˜ë¡œ ì´ë™
+            }
+            else if (menuIndex == 1) {
+                exit(0); // ì¢…ë£Œë¥¼ ì„ íƒí•˜ë©´ í”„ë¡œê·¸ë¨ì„ ì¢…ë£Œ
+            }
+        }
+        }
+    }
+}
+
+int S_keyControl() {
+    int temp = _getch();
+
+    // ë¯¸ì„¸í•œ ìœ„ì¹˜ ì¡°ì •ì„ ìœ„í•œ ì¶”ê°€ ì½”ë“œ
+    if (temp == 0xE0 || temp == 0)
+    {
+        temp = _getch();
+    }
+
+    switch (temp) {
+    case 72: // VK_UP
+        return UP;
+    case 80: // VK_DOWN
+        return DOWN;
+    case 75: // VK_LEFT
+        return LEFT;
+    case 77: // VK_RIGHT
+        return RIGHT;
+    case 13: // Space
+        return SUBMIT;
+    default:
+        return 0;
+    }
 }
