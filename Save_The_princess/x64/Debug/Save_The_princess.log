@@ -1,0 +1,9 @@
+﻿  Function.c
+C:\Users\LG\Desktop\ITShow\Save_The_princess\Save_The_princess\Function.c(1,10): warning C4067: 전처리기 지시문 다음에 예기치 않은 토큰이 있습니다. 줄 바꿈 문자가 필요합니다.
+C:\Users\LG\Desktop\ITShow\Save_The_princess\Save_The_princess\Function.c(154,13): warning C4013: 'gotoxy'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
+C:\Users\LG\Desktop\ITShow\Save_The_princess\Save_The_princess\Function.c(227,34): warning C4013: 'Success'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
+C:\Users\LG\Desktop\ITShow\Save_The_princess\Save_The_princess\Function.c(310,9): warning C4013: 'CursorView'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
+C:\Users\LG\Desktop\ITShow\Save_The_princess\Save_The_princess\Function.c(344,5): warning C4013: 'Over'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
+C:\Users\LG\Desktop\ITShow\Save_The_princess\Save_The_princess\Function.c(96,10): warning C4101: 'BulletFound' :참조되지 않은 지역 변수입니다.
+C:\Users\LG\Desktop\ITShow\Save_The_princess\Save_The_princess\Function.c(416,17): warning C4013: 'main'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
+  Save_The_princess.vcxproj -> C:\Users\LG\Desktop\ITShow\Save_The_princess\x64\Debug\Save_The_princess.exe
